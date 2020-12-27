@@ -15,8 +15,8 @@ jobs:
     if: github.event.repository.owner.id == github.event.sender.id
     env:
       BBSBASEURL: ${{ secrets.BBSBASEURL }}
-      BBSBASEURL: ${{ secrets.BBSUSERNAME }}
-      BBSBASEURL: ${{ secrets.BBSPASSWORD }}
+      BBSUSERNAME: ${{ secrets.BBSUSERNAME }}
+      BBSPASSWORD: ${{ secrets.BBSPASSWORD }}
     steps:
       - name: Checkout
         run: |
