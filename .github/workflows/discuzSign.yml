@@ -14,9 +14,9 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event.repository.owner.id == github.event.sender.id
     env:
-      BASEURL: ${{ secrets.BBSBASEURL }}
-      USERNAME: ${{ secrets.BBSUSERNAME }}
-      PASSWORD: ${{ secrets.BBSPASSWORD }}
+      BBSBASEURL: ${{ secrets.BBSBASEURL }}
+      BBSBASEURL: ${{ secrets.BBSUSERNAME }}
+      BBSBASEURL: ${{ secrets.BBSPASSWORD }}
     steps:
       - name: Checkout
         run: |
