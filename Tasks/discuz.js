@@ -3,127 +3,206 @@
  *
  *
  */
-
 const $ = Env(" Discuz签到");
-$.message = "";
-let Username = "";
-let Password = "";
-let baseUrl = "";
-Username = process.env.USERNAME || "";
-Password = process.env.PASSWORD || "";
-baseUrl = process.env.BASEURL; //论坛首页地址 结尾带上”/”
 //心情：开心，难过，郁闷，无聊，怒，擦汗，奋斗，慵懒，衰
 //{"kx","ng","ym","wl","nu","ch","fd","yl","shuai"};
-const qdxq = "kx"; //签到时使用的心情
-const todaysay = "开心~~~"; //想说的话
 
-//账号登录地址
-let loginPageUrl = baseUrl + "member.php?mod=logging&action=login";
-
-//账号信息提交地址
-const loginSubmitUrl =
-  baseUrl +
-  "member.php?mod=logging&action=login&loginsubmit=yes&loginhash=LNvu3";
-
-//签到页面地址
-const signPageUrl = baseUrl + "plugin.php?id=dsu_paulsign:sign";
-
-//签到信息提交地址
-const signSubmitUrl =
-  baseUrl +
-  "plugin.php?id=dsu_paulsign:sign&operation=qiandao&infloat=0&inajax=0";
-
-// console.log(JSON.stringify({ username: Username, password: Password }));
-let loginSubmitUrlWithBody = {
-  url: loginSubmitUrl,
-  body: `username=${Username}&password=${Password}`,
-  headers: {
-    "user-agent":
-      "Mozilla/5.0 (Linux; Android 10; Redmi K30) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.83 Mobile Safari/537.36",
-    "Content-Type": "application/x-www-form-urlencoded",
-    // 'Cookie': cookie,
-  },
+$.message = "";
+opts = {
+  username: process.env.BBSUSERNAME || "",
+  password: process.env.BBSPASSWORD || "",
+  baseUrl: process.env.BBSBASEURL || "", //论坛首页地址 结尾带上”/”,
 };
-//登录并获取cookie
-async function getCookie(url) {
-  let cookie;
-  return new Promise(async (resolve, reject) => {
-    $.post(url, async (err, response, data) => {
-      try {
-        if (err) {
-          $.msg(err);
-        } else {
-          $.log("成功取得用户cookie");
-          cookie = response.headers["set-cookie"];
-        }
-      } catch (e) {
-        $.msg(e);
-      } finally {
-        resolve({ body: data, cookie: cookie });
-      }
-    });
-  });
-}
 
-//携带cookie请求每天签到页面
-function getSignPage(url, cookie) {
-  let newUrl = {
-    url: url,
-    headers: {
-      Cookie: cookie,
-      "user-agent":
-        "Mozilla/5.0 (Linux; Android 10; Redmi K30) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.83 Mobile Safari/537.36",
-    },
+//封装请求参数
+class generateRequests {
+  options = {
+    username: "",
+    password: "",
+    baseUrl: "",
+    qdxq: "kx", //签到时使用的心情
+    todaysay: "开心~~~", //想说的话
   };
-  return new Promise(async (resolve, reject) => {
-    $.get(newUrl, async (err, res, data) => {
-      if (!data.indexOf("您今天已经签到过了或者签到时间还未开始")) {
-        $resultStr = "今天已签过到\r\n";
-      } else {
-        $.log("开始签到");
-        let hashString = getFormhash(data);
-        let signUrl = {
-          url: signSubmitUrl,
-          body: `qdmode=1&formhash=${hashString}&qdxq=${qdxq}&fastreply=0}&todaysay=${todaysay}`,
-          headers: {
-            "user-agent":
-              "Mozilla/5.0 (Linux; Android 10; Redmi K30) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.83 Mobile Safari/537.36",
-            "Content-Type": "application/x-www-form-urlencoded",
-            Cookie: cookie,
-            // 'Cookie': cookie,
-          },
-        };
-        $.post(signUrl, async (err, response, data) => {
+  cookie;
+  // constructor({ username, password, baseUrl }) {
+  constructor(options) {
+    this.options = { ...options };
+  }
+  getUsername() {
+    return this.options.username;
+  }
+  getPassword() {
+    return this.options.password;
+  }
+  getBaseUrl() {
+    return this.options.baseUrl;
+  }
+
+  getCookie() {
+    return this.cookie;
+  }
+  getQdxq() {
+    return this.options.qdxq;
+  }
+  getTodaysay() {
+    return this.options.todaysay;
+  }
+
+  // 账号登录地址
+  loginPageUrl() {
+    return this.getBaseUrl() + "member.php?mod=logging&action=login";
+  }
+  // 账号信息提交地址
+  loginSubmitUrl() {
+    return (
+      this.getBaseUrl() +
+      "member.php?mod=logging&action=login&loginsubmit=yes&loginhash=LNvu3"
+    );
+  }
+  //签到页面地址
+  signPageUrl() {
+    return this.getBaseUrl() + "plugin.php?id=dsu_paulsign:sign";
+  }
+  //签到信息提交地址
+  signSubmitUrl() {
+    return (
+      this.getBaseUrl() +
+      "plugin.php?id=dsu_paulsign:sign&operation=qiandao&infloat=0&inajax=0"
+    );
+  }
+
+  //请求登录参数
+  LoginSubmit() {
+    return {
+      url: this.loginSubmitUrl(),
+      body: `username=${this.getUsername()}&password=${this.getPassword()}`,
+      headers: {
+        "user-agent":
+          "Mozilla/5.0 (Linux; Android 10; Redmi K30) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.83 Mobile Safari/537.36",
+        "Content-Type": "application/x-www-form-urlencoded",
+        // 'Cookie': cookie,
+      },
+    };
+  }
+  signPageWithCookie(cookie) {
+    return {
+      url: this.signPageUrl(),
+      headers: {
+        Cookie: cookie,
+        "user-agent":
+          "Mozilla/5.0 (Linux; Android 10; Redmi K30) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.83 Mobile Safari/537.36",
+      },
+    };
+  }
+
+  signSubmitWithCookie(cookie, hashString, qdxq, todaysay) {
+    return {
+      url: this.signSubmitUrl(),
+      body: `qdmode=1&formhash=${hashString}&qdxq=${qdxq}&fastreply=0}&todaysay=${todaysay}`,
+      headers: {
+        "user-agent":
+          "Mozilla/5.0 (Linux; Android 10; Redmi K30) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.83 Mobile Safari/537.36",
+        "Content-Type": "application/x-www-form-urlencoded",
+        Cookie: cookie,
+      },
+    };
+  }
+
+  getFormhash(res) {
+    const re = /name="formhash" value="(.*?)"/i;
+    const str = re.exec(res);
+    return str[1];
+  }
+  //登录并获取cookie
+  async Login() {
+    return new Promise(async (resolve, reject) => {
+      return $.post(this.LoginSubmit(), async (err, response, data) => {
+        try {
+          if (err) {
+            $.msg(err);
+          } else {
+            $.log("成功取得用户cookie");
+            this.cookie = response.headers["set-cookie"];
+          }
+        } catch (e) {
+          $.msg(e);
+          reject(e);
+        } finally {
+          return resolve({ body: data, cookie: this.cookie });
+        }
+      });
+    });
+  }
+  async getSignPage(cookie) {
+    return new Promise(async (resolve, reject) => {
+      $.get(this.signPageWithCookie(cookie), async (err, response, data) => {
+        if (data.indexOf("今天已签到") > -1) {
+          // reject({
+          //   hasSigned: true,
+          //   info: ($.message += "今天已签过到\r\n"),
+          // });
+          reject(($.message += "今天已签过到\r\n"));
+        } else {
+          let hashString = this.getFormhash(data);
+          resolve({ hashString: hashString });
+        }
+      });
+    });
+  }
+
+  async postSignSubmit(ck, hashString, qdxq, todaysay) {
+    return new Promise(async (resolve, reject) => {
+      $.log("开始签到");
+      $.post(
+        this.signSubmitWithCookie(
+          ck,
+          hashString,
+          this.getQdxq(),
+          this.getTodaysay()
+        ),
+        async (err, response, data) => {
           try {
-            // console.log(data.indexOf("您今日已经签到"));
-            if (data.indexOf("您今天已经签到过了或者签到时间还未开始")) {
+            if (data.indexOf("今日已经签到") < 0) {
               $.message += "签到成功\r\n";
             } else {
               $.message += "签到失败\r\n";
             }
+            let re = /class="showmenu">积分: (.*?)\</i;
+            const score = re.exec(data)[1];
+            $.message += "当前积分" + score + "分";
+            return resolve({ message: `${$.message}` });
           } catch (e) {
             $.msg(e);
           }
-          let re = /class="showmenu">积分: (.*?)\</i;
-          const score = re.exec(data)[1];
-          $.message += "当前积分" + score + "分";
-
-          $.msg($.message);
-        });
-      }
+        }
+      );
     });
-  });
+  }
+
+  // 携带cookie请求每天签到页面
+  async SignPage(cookie = null) {
+    let ck = cookie ? cookie : this.getCookie();
+    try {
+      let { hashString } = await this.getSignPage(ck);
+      let { message } = await this.postSignSubmit(
+        ck,
+        hashString,
+        qdxq,
+        todaysay
+      );
+      return message || "";
+    } catch (e) {
+      return e;
+    }
+  }
 }
 
-function getFormhash(res) {
-  re = /name="formhash" value="(.*?)"/i;
-  let str = re.exec(res);
-  return str[1];
-}
 //开始签到
 (async () => {
-  res = await getCookie(loginSubmitUrlWithBody);
-  await getSignPage(signPageUrl, res.cookie);
+  const Discuz = new generateRequests(opts);
+  await Discuz.Login();
+  let message = await Discuz.SignPage();
+  $.msg(message);
 })();
 
 // prettier-ignore
