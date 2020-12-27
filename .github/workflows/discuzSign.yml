@@ -14,9 +14,9 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event.repository.owner.id == github.event.sender.id
     env:
-      BASEURL: ${{ secrets.BASEURL }}
-      USERNAME: ${{ secrets.USERNAME }}
-      PASSWORD: ${{ secrets.PASSWORD }}
+      BASEURL: ${{ secrets.BBSBASEURL }}
+      USERNAME: ${{ secrets.BBSUSERNAME }}
+      PASSWORD: ${{ secrets.BBSPASSWORD }}
     steps:
       - name: Checkout
         run: |
@@ -26,12 +26,12 @@ jobs:
         with:
           node-version: 12.x
       - name: npm install
-        if: env.BASEURL
+        if: env.BBSBASEURL
         run: |
           cd ~/myStuffs
           npm install
       - name: "运行 【DISCUZ签到】"
-        if: env.BASEURL
+        if: env.BBSBASEURL
         run: |
           cd ~/myStuffs
           node Tasks/discuz.js
