@@ -34,7 +34,7 @@ jobs:
         if: env.BASEURL
         run: |
           cd ~/myStuffs
-          node Task/discuz.js
+          node Tasks/discuz.js
         env:
           PUSH_KEY: ${{ secrets.PUSH_KEY }}
           BARK_PUSH: ${{ secrets.BARK_PUSH }}
