@@ -4,8 +4,6 @@
  *
  */
 const $ = Env(" Discuz签到");
-//心情：开心，难过，郁闷，无聊，怒，擦汗，奋斗，慵懒，衰
-//{"kx","ng","ym","wl","nu","ch","fd","yl","shuai"};
 
 $.message = "";
 opts = {
@@ -20,6 +18,9 @@ class generateRequests {
     username: "",
     password: "",
     baseUrl: "",
+    //心情：开心，难过，郁闷，无聊，怒，擦汗，奋斗，慵懒，衰
+    //{"kx","ng","ym","wl","nu","ch","fd","yl","shuai"};
+
     qdxq: "kx", //签到时使用的心情
     todaysay: "开心~~~", //想说的话
   };
@@ -154,12 +155,7 @@ class generateRequests {
     return new Promise(async (resolve, reject) => {
       $.log("开始签到");
       $.post(
-        this.signSubmitWithCookie(
-          ck,
-          hashString,
-          this.getQdxq(),
-          this.getTodaysay()
-        ),
+        this.signSubmitWithCookie(ck, hashString, qdxq, todaysay),
         async (err, response, data) => {
           try {
             if (data.indexOf("今日已经签到") < 0) {
@@ -187,8 +183,8 @@ class generateRequests {
       let { message } = await this.postSignSubmit(
         ck,
         hashString,
-        qdxq,
-        todaysay
+        this.getQdxq(),
+        this.getTodaysay()
       );
       return message || "";
     } catch (e) {
