@@ -35,8 +35,8 @@ jobs:
           npm install
       - name: "运行 【DISCUZ签到】"
         if: env.BBSBASEURL
-        run: |
-          cd ~/myStuffs
+        run: 
+#           cd ~/myStuffs
           node Tasks/discuz.js
         env:
           PUSH_KEY: ${{ secrets.PUSH_KEY }}
