@@ -136,7 +136,7 @@ class generateRequests {
   async getSignPage(cookie) {
     return new Promise(async (resolve, reject) => {
       $.get(this.signPageWithCookie(cookie), async (err, response, data) => {
-        if (data.indexOf("今天已签到") > -1) {
+        if (data.indexOf("您今天已经签到过") > -1) {
           // reject({
           //   hasSigned: true,
           //   info: ($.message += "今天已签过到\r\n"),
