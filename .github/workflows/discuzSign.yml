@@ -30,8 +30,8 @@ jobs:
           node-version: 12.x
       - name: npm install
         if: env.BBSBASEURL
-        run: |
-          cd ~/myStuffs
+        run:
+#          cd ~/myStuffs
           npm install
       - name: "运行 【DISCUZ签到】"
         if: env.BBSBASEURL
