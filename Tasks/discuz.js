@@ -3,13 +3,15 @@
  *
  *
  */
-const $ = Env(" Discuz签到");
+const $ = new Env(" Discuz签到");
 
 $.message = "";
-opts = {
+let opts = {
   username: process.env.BBSUSERNAME || "",
   password: process.env.BBSPASSWORD || "",
   baseUrl: process.env.BBSBASEURL || "", //论坛首页地址 结尾带上”/”,
+  qdxq: "kx", //签到时使用的心情
+  todaysay: "开心~~~", //想说的话
 };
 
 //封装请求参数
@@ -21,8 +23,8 @@ class generateRequests {
     //心情：开心，难过，郁闷，无聊，怒，擦汗，奋斗，慵懒，衰
     //{"kx","ng","ym","wl","nu","ch","fd","yl","shuai"};
 
-    qdxq: "kx", //签到时使用的心情
-    todaysay: "开心~~~", //想说的话
+    qdxq: "", //签到时使用的心情
+    todaysay: "", //想说的话
   };
   cookie;
   // constructor({ username, password, baseUrl }) {
@@ -99,7 +101,7 @@ class generateRequests {
   signSubmitWithCookie(cookie, hashString, qdxq, todaysay) {
     return {
       url: this.signSubmitUrl(),
-      body: `qdmode=1&formhash=${hashString}&qdxq=${qdxq}&fastreply=0}&todaysay=${todaysay}`,
+      body: `qdmode=1&formhash=${hashString}&qdxq=${qdxq}&fastreply=0&todaysay=${todaysay}`,
       headers: {
         "user-agent":
           "Mozilla/5.0 (Linux; Android 10; Redmi K30) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.83 Mobile Safari/537.36",
@@ -116,13 +118,14 @@ class generateRequests {
   }
   //登录并获取cookie
   async Login() {
+    $.log("开始登陆");
     return new Promise(async (resolve, reject) => {
       return $.post(this.LoginSubmit(), async (err, response, data) => {
         try {
           if (err) {
             $.msg(err);
           } else {
-            $.log("成功取得用户cookie");
+            $.log("取得cookie");
             this.cookie = response.headers["set-cookie"];
           }
         } catch (e) {
@@ -154,7 +157,7 @@ class generateRequests {
   async postSignSubmit(ck, hashString, qdxq, todaysay) {
     return new Promise(async (resolve, reject) => {
       $.log("开始签到");
-      $.post(
+      return $.post(
         this.signSubmitWithCookie(ck, hashString, qdxq, todaysay),
         async (err, response, data) => {
           try {
@@ -197,7 +200,7 @@ class generateRequests {
 (async () => {
   const Discuz = new generateRequests(opts);
   await Discuz.Login();
-  let message = await Discuz.SignPage();
+  let message = await Discuz.SignPage(Discuz.cookie);
   $.msg(message);
 })();
 
