@@ -14,7 +14,6 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
-    node: [16,18]
     if: github.event.repository.owner.id == github.event.sender.id
     env:
       BBSBASEURL: ${{ secrets.BBSBASEURL }}
