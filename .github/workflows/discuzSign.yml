@@ -14,6 +14,7 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
+    node: [16,18]
     if: github.event.repository.owner.id == github.event.sender.id
     env:
       BBSBASEURL: ${{ secrets.BBSBASEURL }}
@@ -21,13 +22,13 @@ jobs:
       BBSPASSWORD: ${{ secrets.BBSPASSWORD }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 #         run: |
 #           git clone https://github.com/DJ-clamp/myStuffs.git ~/myStuffs
-      - name: Use Node.js 12.x
-        uses: actions/setup-node@v1
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@v3
         with:
-          node-version: 12.x
+          node-version: 18.x
       - name: npm install
         if: env.BBSBASEURL
         run:
