@@ -249,14 +249,14 @@ class generateRequests {
   async getMoneyPage(cookie) {
     return new Promise(async (resolve, reject) => {
       $.get(this.monePageWithCookie(cookie), async (err, response, data) => {
-        if (data.indexOf("您今天已经签到过") > -1) {
-          reject(($.message += "今天已签过到\r\n"));
-        } else {
+        // if (data.indexOf("您今天已经签到过") > -1) {
+        //   reject(($.message += "今天已签过到\r\n"));
+        // } else {
           // console.log(data)
           let hashString = this.getFormhash(data);
           let hid = this.getHid(data)
           resolve({ hashString: hashString, hid: hid });
-        }
+        // }
       });
     });
   }
