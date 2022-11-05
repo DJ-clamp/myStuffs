@@ -16,9 +16,9 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event.repository.owner.id == github.event.sender.id
     env:
-      BBSBASEURL: ${{ secrets.BBS7BASEURL }}
-      BBSUSERNAME: ${{ secrets.BBS7USERNAME }}
-      BBSPASSWORD: ${{ secrets.BBS7PASSWORD }}
+      BBS7BASEURL: ${{ secrets.BBS7BASEURL }}
+      BBS7USERNAME: ${{ secrets.BBS7USERNAME }}
+      BBS7PASSWORD: ${{ secrets.BBS7PASSWORD }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
