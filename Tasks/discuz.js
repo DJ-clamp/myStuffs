@@ -91,7 +91,7 @@ class generateRequests {
     return {
       url: this.signPageUrl(),
       headers: {
-        Cookie: cookie,
+        cookie: cookie,
         "user-agent":
           "Mozilla/5.0 (Linux; Android 10; Redmi K30) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.83 Mobile Safari/537.36",
       },
