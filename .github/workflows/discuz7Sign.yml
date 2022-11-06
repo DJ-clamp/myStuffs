@@ -4,9 +4,12 @@
 name: DISCUZ7红包
 
 on:
-  workflow_dispatch:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
   schedule:
-    - cron: "0 0 * * *"
+    - cron: 5 * * * *
   watch:
     types: [started]
 env:
@@ -14,7 +17,7 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
-    if: github.event.repository.owner.id == github.event.sender.id
+    # if: github.event.repository.owner.id == github.event.sender.id
     env:
       BBS7BASEURL: ${{ secrets.BBS7BASEURL }}
       BBS7USERNAME: ${{ secrets.BBS7USERNAME }}
