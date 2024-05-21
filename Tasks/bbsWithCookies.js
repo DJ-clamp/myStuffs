@@ -22,7 +22,7 @@ async function logBBS() {
   const SignBaseUrl = getBaseUrl(opts);
   const SignPageUrl = signPageUrl(opts);
   try {
-    const response = await fetch(signPageUrl, {
+    const response = await fetch(SignPageUrl, {
       headers: {
         "accept": "text/plain, */*; q=0.01",
         "accept-language": "zh-CN,zh;q=0.9,en;q=0.8",
