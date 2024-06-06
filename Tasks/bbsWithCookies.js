@@ -30,7 +30,7 @@ async function logBBS() {
       },
       "method": "GET"
     }).then(async()=> {
-       await fetch(SignPageUrl, {
+      const response = await fetch(SignPageUrl, {
         headers: {
           "accept": "text/plain, */*; q=0.01",
           "Accept-Encoding":"gzip, deflate, br, zstd",
