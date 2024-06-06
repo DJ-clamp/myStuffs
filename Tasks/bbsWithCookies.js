@@ -29,25 +29,43 @@ async function logBBS() {
         "User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"
       },
       "method": "GET"
+    }).then(async()=> {
+       await fetch(SignPageUrl, {
+        headers: {
+          "accept": "text/plain, */*; q=0.01",
+          "Accept-Encoding":"gzip, deflate, br, zstd",
+          "sec-ch-ua": "\"Chromium\";v=\"124\", \"Google Chrome\";v=\"124\", \"Not-A.Brand\";v=\"99\"",
+          "x-requested-with": "XMLHttpRequest",
+          "User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
+          "Cookie": opts.cookie,
+          "Referer": SignBaseUrl,
+        },
+        method: "POST"
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const result = await response.json();
+      return result;
     });
-    const response = await fetch(SignPageUrl, {
-      headers: {
-        "accept": "text/plain, */*; q=0.01",
-        "Accept-Encoding":"gzip, deflate, br, zstd",
-        "sec-ch-ua": "\"Chromium\";v=\"124\", \"Google Chrome\";v=\"124\", \"Not-A.Brand\";v=\"99\"",
-        "x-requested-with": "XMLHttpRequest",
-        "User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
-        "Cookie": opts.cookie,
-        "Referer": SignBaseUrl,
-      },
-      method: "POST"
-    });
+    // const response = await fetch(SignPageUrl, {
+    //   headers: {
+    //     "accept": "text/plain, */*; q=0.01",
+    //     "Accept-Encoding":"gzip, deflate, br, zstd",
+    //     "sec-ch-ua": "\"Chromium\";v=\"124\", \"Google Chrome\";v=\"124\", \"Not-A.Brand\";v=\"99\"",
+    //     "x-requested-with": "XMLHttpRequest",
+    //     "User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
+    //     "Cookie": opts.cookie,
+    //     "Referer": SignBaseUrl,
+    //   },
+    //   method: "POST"
+    // });
+    // if (!response.ok) {
+    //   throw new Error(`HTTP error! status: ${response.status}`);
+    // }
+    // const result = await response.json();
+    // return result;
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const result = await response.json();
-    return result;
   } catch (error) {
     console.error("An error occurred while logging into the BBS:", error);
     throw error; // 可以选择抛出错误，以便调用者能够处理
