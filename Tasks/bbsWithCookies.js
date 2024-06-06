@@ -18,11 +18,15 @@ function getBaseUrl(options) {
 function signPageUrl(options) {
   return getBaseUrl(options) + "my-sign.htm";
 }
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
 async function logBBS() {
   const SignBaseUrl = getBaseUrl(opts);
   const SignPageUrl = signPageUrl(opts);
   try {
-    const enteryURL = await fetch(SignPageUrl, {
+    await fetch(SignPageUrl, {
       headers: {
         "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
         "Cookie": opts.cookie,
@@ -30,6 +34,7 @@ async function logBBS() {
       },
       "method": "GET"
     }).then(async()=> {
+      await sleep(5000); 
       const response = await fetch(SignPageUrl, {
         headers: {
           "accept": "text/plain, */*; q=0.01",
@@ -46,29 +51,12 @@ async function logBBS() {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const result = await response.json();
-      return result;
+      console.log(result);
     });
-    // const response = await fetch(SignPageUrl, {
-    //   headers: {
-    //     "accept": "text/plain, */*; q=0.01",
-    //     "Accept-Encoding":"gzip, deflate, br, zstd",
-    //     "sec-ch-ua": "\"Chromium\";v=\"124\", \"Google Chrome\";v=\"124\", \"Not-A.Brand\";v=\"99\"",
-    //     "x-requested-with": "XMLHttpRequest",
-    //     "User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
-    //     "Cookie": opts.cookie,
-    //     "Referer": SignBaseUrl,
-    //   },
-    //   method: "POST"
-    // });
-    // if (!response.ok) {
-    //   throw new Error(`HTTP error! status: ${response.status}`);
-    // }
-    // const result = await response.json();
-    // return result;
 
   } catch (error) {
     console.error("An error occurred while logging into the BBS:", error);
     throw error; // 可以选择抛出错误，以便调用者能够处理
   }
 }
-logBBS().then(res => console.log(res)).catch(err => console.error(err));
+logBBS().then().catch(err => console.error(err));
